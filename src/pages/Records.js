@@ -1,69 +1,49 @@
 // src/pages/Records.js
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Se usará en el futuro para llamadas reales al backend
+import { getRecords, deleteRecord } from "../services/api";
 
 const Records = () => {
-  // Estado para almacenar la lista de registros, la carga y posibles errores
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Función para simular la carga de registros (en un futuro se realizará una llamada a la API)
   const fetchRecords = async () => {
     try {
-      // Simulamos una llamada al backend con datos dummy
-      // En una implementación real podrías usar:
-      // const response = await axios.get(`${process.env.REACT_APP_API_URL}/records`);
-      // setRecords(response.data);
-      const dummyData = [
-        {
-          id: 1,
-          name: "Registro 1",
-          description: "Descripción del registro 1",
-        },
-        {
-          id: 2,
-          name: "Registro 2",
-          description: "Descripción del registro 2",
-        },
-        {
-          id: 3,
-          name: "Registro 3",
-          description: "Descripción del registro 3",
-        },
-      ];
-      setRecords(dummyData);
+      const data = await getRecords();
+      setRecords(data);
       setLoading(false);
     } catch (err) {
+      console.error(err);
       setError("Error al cargar los registros.");
       setLoading(false);
     }
   };
 
-  // Cargar registros al montar el componente
   useEffect(() => {
     fetchRecords();
   }, []);
 
-  // Función para borrar un registro (simulación)
-  const handleDelete = (id) => {
-    // En una implementación real, realizarías una petición DELETE al backend
-    setRecords(records.filter((record) => record.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await deleteRecord(id);
+      // Actualizamos la lista filtrando el registro eliminado
+      setRecords(records.filter((record) => record.id !== id));
+    } catch (err) {
+      console.error(err);
+      setError("Error al borrar el registro.");
+    }
   };
 
-  // Función para editar un registro (simulación)
   const handleEdit = (id) => {
-    // En un caso real, podrías redirigir a un formulario de edición o mostrar un modal
+    // Aquí se podría redirigir a un formulario de edición o abrir un modal
     console.log("Editar registro con ID:", id);
   };
 
-  // Función para crear un nuevo registro (simulación)
   const handleCreate = () => {
-    // En un caso real, podrías redirigir a un formulario de creación o mostrar un modal
+    // Aquí se podría redirigir a un formulario de creación o abrir un modal
     console.log("Crear un nuevo registro");
   };
 
-  // Manejo de estados de carga o error
   if (loading) return <p>Cargando registros...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 

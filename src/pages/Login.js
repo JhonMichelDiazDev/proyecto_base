@@ -1,20 +1,18 @@
 // src/pages/Login.js
-import React, { useState } from "react";
-import axios from "axios"; // Se utilizará para llamar al backend
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { loginUser } from "../services/api";
 
 const Login = () => {
-  // Estado para almacenar el usuario y la contraseña
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
-  // Estado para manejar mensajes de error
   const [error, setError] = useState("");
-  // Hook para redirigir después de un login exitoso
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Maneja el cambio en los campos del formulario
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
@@ -22,35 +20,25 @@ const Login = () => {
     });
   };
 
-  // Función para enviar el formulario de login
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validación básica: se requiere usuario y contraseña
     if (!credentials.username || !credentials.password) {
       setError("Por favor, ingresa usuario y contraseña.");
       return;
     }
 
     try {
-      // En un escenario real, realizarías una petición al backend, por ejemplo:
-      // const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, credentials);
-      // if (response.data.token) { ... }
-
-      // Aquí simulamos la validación:
-      // Si las credenciales son 'admin' / 'admin', se considera login exitoso
-      if (
-        credentials.username === "admin" &&
-        credentials.password === "admin"
-      ) {
-        // Guardamos un token ficticio en el almacenamiento local
-        localStorage.setItem("token", "dummy-token");
-        // Redirigimos a la página protegida de registros
+      // Se llama al servicio para autenticar al usuario
+      const data = await loginUser(credentials);
+      // Suponiendo que el backend devuelve { token, user } al autenticar
+      if (data.token) {
+        login(data.token, data.user);
         navigate("/records");
       } else {
         setError("Credenciales inválidas.");
       }
     } catch (err) {
+      console.error(err);
       setError("Error al intentar iniciar sesión.");
     }
   };
