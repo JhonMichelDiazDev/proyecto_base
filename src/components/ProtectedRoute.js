@@ -1,13 +1,14 @@
 // src/components/ProtectedRoute.js
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
-
-// Para el momento, vamos a simular la autenticación con una variable (más adelante se integrará con AuthContext)
-const isAuthenticated = false; // Esto se reemplazará con la lógica real de autenticación
+import { AuthContext } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  if (!isAuthenticated) {
+  // Accedemos al contexto de autenticación para obtener el estado actual
+  const { auth } = useContext(AuthContext);
+
+  if (!auth.isAuthenticated) {
     // Si el usuario no está autenticado, redirige a /login
     return <Navigate to="/login" replace />;
   }
