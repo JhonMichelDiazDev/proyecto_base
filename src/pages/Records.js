@@ -1,4 +1,3 @@
-// src/pages/Records.js
 import React, { useState, useEffect } from "react";
 import { getRecords, deleteRecord } from "../services/api";
 
@@ -26,7 +25,6 @@ const Records = () => {
   const handleDelete = async (id) => {
     try {
       await deleteRecord(id);
-      // Actualizamos la lista filtrando el registro eliminado
       setRecords(records.filter((record) => record.id !== id));
     } catch (err) {
       console.error(err);
@@ -35,12 +33,10 @@ const Records = () => {
   };
 
   const handleEdit = (id) => {
-    // Aquí se podría redirigir a un formulario de edición o abrir un modal
     console.log("Editar registro con ID:", id);
   };
 
   const handleCreate = () => {
-    // Aquí se podría redirigir a un formulario de creación o abrir un modal
     console.log("Crear un nuevo registro");
   };
 

@@ -1,15 +1,12 @@
-// src/components/RecordForm.js
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 const RecordForm = ({ initialData = null, onSubmit, onCancel }) => {
-  // El estado del formulario se inicializa vacío o con los datos a editar
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
 
-  // Si se proporciona initialData, se actualiza el estado cuando el componente se monta o cuando cambia initialData
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -19,7 +16,6 @@ const RecordForm = ({ initialData = null, onSubmit, onCancel }) => {
     }
   }, [initialData]);
 
-  // Maneja los cambios en los campos del formulario
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,15 +23,13 @@ const RecordForm = ({ initialData = null, onSubmit, onCancel }) => {
     });
   };
 
-  // Maneja el envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validación básica: se puede ampliar según necesidades
+
     if (formData.name.trim() === "") {
       alert("El nombre es requerido.");
       return;
     }
-    // Se invoca la función onSubmit pasada como prop con los datos del formulario
     onSubmit(formData);
   };
 

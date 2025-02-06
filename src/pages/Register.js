@@ -1,37 +1,35 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { loginUser } from "../services/authService";
+import { registerUser } from "../services/authService";
 
-const Login = () => {
+const Register = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser(credentials.username, credentials.password);
-      login(data.token, credentials.username);
+      const data = await registerUser(formData.username, formData.password);
+      // Se espera que data tenga la propiedad token
+      login(data.token, formData.username);
       navigate("/eventos");
     } catch (err) {
-      setError("Error al iniciar sesión. Verifica tus credenciales.");
+      setError("Error al registrarse. Quizás el usuario ya exista.");
       console.error(err);
     }
   };
 
   return (
     <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
-      <h2>Iniciar Sesión</h2>
+      <h2>Registro</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "1rem" }}>
@@ -39,7 +37,7 @@ const Login = () => {
           <input
             type="text"
             name="username"
-            value={credentials.username}
+            value={formData.username}
             onChange={handleChange}
             style={{ width: "100%", padding: "0.5rem" }}
           />
@@ -49,20 +47,20 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            value={credentials.password}
+            value={formData.password}
             onChange={handleChange}
             style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
         <button type="submit" style={{ padding: "0.5rem 1rem" }}>
-          Iniciar Sesión
+          Registrarse
         </button>
       </form>
       <p>
-        ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
+        ¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link>
       </p>
     </div>
   );
 };
 
-export default Login;
+export default Register;
